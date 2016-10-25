@@ -1,0 +1,5 @@
+ Django
+ psycopg2
+ django-extensions
+ werkzeug
+ beautifulsoup4
