@@ -24,7 +24,7 @@ class Materia(models.Model):
     url = models.URLField(blank=True)
     url_materia_integra = models.URLField(blank=True)
     area_impacto = models.MultiPolygonField(blank=True, null=True)
-    dados = JSONField()
+    dados = JSONField(blank=True, null=True)
     # meta dados
     criado = models.DateTimeField(blank=True, auto_now_add=True, verbose_name="Criado")
     atualizado = models.DateTimeField(blank=True, auto_now=True, verbose_name="Atualizado")

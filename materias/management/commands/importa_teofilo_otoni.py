@@ -9,7 +9,7 @@ import time
 
 from materias.models import Materia
 
-total_paginas = 5
+total_paginas = 40
 paginas = range(1,total_paginas+1)
 links_bruto = []
 
@@ -66,6 +66,7 @@ class ParseUrlMateria(object):
                 if u"Regime" in td.b.string:
                     regime = td.contents[1].strip()
                     self.retorno['regime'] = regime
+        print("RESULTADO PARSE", self.retorno)
 
 class Command(BaseCommand):
     help = "Importa Materias de Teofilo Otoni"
@@ -77,8 +78,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         thefile = open('links_brutos.p', 'w')
         for pagina in paginas:
-            pagina_url = 'http://sapl.teofilootoni.mg.leg.br/generico/materia_pesquisar_proc?page=%d&step=8&txt_relator=&txt_numero=&dt_public2=&lst_tip_autor=&txt_num_protocolo=&hdn_txt_autor=&txt_ano=&rd_ordem_td=1&dat_sessao=00/00/0000&hdn_cod_autor=&lst_localizacao=&lst_tip_materia=&txt_assunto=&btn_materia_pesquisar=Pesquisar&incluir=0&rd_ordenacao=2&dt_apres2=&lst_cod_partido=&chk_coautor=&lst_status=&dt_public=&rad_tramitando=&total_materias=901&txt_npc=&existe_ocorrencia=0&dt_apres=' % pagina
+            #pagina_url = 'http://sapl.teofilootoni.mg.leg.br/generico/materia_pesquisar_proc?page=%d&step=8&txt_relator=&txt_numero=&dt_public2=&lst_tip_autor=&txt_num_protocolo=&hdn_txt_autor=&txt_ano=&rd_ordem_td=1&dat_sessao=00/00/0000&hdn_cod_autor=&lst_localizacao=&lst_tip_materia=&txt_assunto=&btn_materia_pesquisar=Pesquisar&incluir=0&rd_ordenacao=2&dt_apres2=&lst_cod_partido=&chk_coautor=&lst_status=&dt_public=&rad_tramitando=&total_materias=901&txt_npc=&existe_ocorrencia=0&dt_apres=' % pagina
+            pagina_url = 'http://sapl.teofilootoni.mg.leg.br/generico/materia_pesquisar_proc?page=%d&step=8&dt_votac=&txt_relator=&txt_numero=&dt_public2=&lst_tip_autor=&txt_num_protocolo=&hdn_txt_autor=&dt_votac2=&txt_ano=&rd_ordem_td=1&dat_sessao=00/00/0000&hdn_cod_autor=&lst_localizacao=&lst_tip_materia=&txt_assunto=&btn_materia_pesquisar=Pesquisar&rad_tramitando=&incluir=0&rd_ordenacao=1&dt_apres2=&lst_cod_partido=&chk_coautor=&lst_status=&dt_public=&total_materias=1004&txt_npc=&existe_ocorrencia=0&dt_apres=' % pagina
             time.sleep(2)
+            print("puxou {0}".format(pagina_url))
             conteudo = urlopen(pagina_url).read()
             soup = BeautifulSoup(conteudo, 'html.parser')
             links = soup.find_all('a')
@@ -95,6 +98,7 @@ class Command(BaseCommand):
                 id_referencia=materia_dict['id'],
                 ano=materia_dict['ano'],
             )
+            print("DADOS: {0}".format(materia_dict))
             materia.autor = materia_dict['autor'] or None
             materia.data = datetime.datetime.strptime(materia_dict['data'], '%d/%m/%Y')
             materia.ementa = materia_dict['ementa']
